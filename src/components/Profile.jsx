@@ -6,6 +6,7 @@ const Profile = () => {
   return (
     <div>
       <p>Username: {profile.username}</p>
+      <button onClick={() => profile.deleteUsername()}>Delete Username</button>
     </div>
   )
 }
