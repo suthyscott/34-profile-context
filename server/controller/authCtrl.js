@@ -41,5 +41,33 @@ module.exports = {
     },
     login: async (req, res) => {
         console.log('hit login')
+        try{
+            const {username, password} = req.body
+            const foundUser = await User.findOne({where: {username}})
+
+            if(foundUser){
+                const isAuthenticated = bcrypt.compareSync(password, foundUser.hashedPass)
+
+                if(isAuthenticated){
+                    const token = createToken(foundUser.dataValues.username, foundUser.dataValues.id)
+                    const exp = Date.now() + 1000 * 60 * 60 * 48
+
+                    res.status(200).send({
+                        username: foundUser.dataValues.username,
+                        userId: foundUser.dataValues.id,
+                        token,
+                        exp
+                    })
+                } else {
+                    res.status(400).send('That password is incorrect')
+                }
+            } else {
+                res.status(400).send('There is no user with that username.')
+            }
+
+        } catch(err){
+            console.log(err)
+            res.status(400).send('Something went wrong in login.')
+        }
     }
 }
