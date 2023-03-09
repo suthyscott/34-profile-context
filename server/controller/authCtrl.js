@@ -13,6 +13,7 @@ module.exports = {
         console.log('hit register')
         try{
             const {username, password} = req.body
+            console.log(username)
             let foundUser = await User.findOne({where: {username}})
             if(foundUser){
                 res.status(400).send('That username is already taken')
